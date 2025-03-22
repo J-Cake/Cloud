@@ -1,0 +1,148 @@
+/* Base Values */
+:root {
+    --spacing-xxs: 2px;
+    --spacing-xs: 4px;
+    --spacing-s: 7px;
+    --spacing-m: 12px;
+    --spacing-l: 24px;
+    --spacing-xl: 32px;
+    --spacing-xxl: 64px;
+
+    --element-xxs: 48px;
+    --element-xs: 110px;
+    --element-s: 250px;
+    --element-m: 520px;
+    --element-l: 840px;
+    --element-xl: 1200px;
+    --element-xxl: 1900px;
+
+    --lightness-xxd: 0%;
+    --lightness-xd: 10%;
+    --lightness-d: 25%;
+    --lightness-m: 50%;
+    --lightness-b: 75%;
+    --lightness-xb: 90%;
+    --lightness-xxb: 100%;
+
+    --radius-xxs: var(--spacing-xxs);
+    --radius-xs: var(--spacing-xs);
+    --radius-s: var(--spacing-s);
+    --radius-m: var(--spacing-m);
+    --radius-l: var(--spacing-l);
+    --radius-xl: var(--spacing-xl);
+    --radius-xxl: var(--spacing-xxl);
+
+    --shade-01: hsl(0, 0%, var(--lightness-xxd));
+    --shade-02: hsl(0, 0%, var(--lightness-xd));
+    --shade-03: hsl(0, 0%, var(--lightness-d));
+    --shade-04: hsl(0, 0%, var(--lightness-m));
+    --shade-05: hsl(0, 0%, var(--lightness-b));
+    --shade-06: hsl(0, 0%, var(--lightness-xb));
+    --shade-07: hsl(0, 0%, var(--lightness-xxb));
+
+    --accent: hsl(var(--accent-h), var(--accent-s), var(--accent-l));
+    --accent-h: 45;
+    --accent-s: 33%;
+    --accent-l: 59%;
+
+    --red: #da4628;
+    --green: #07c165;
+    --blue: #0b87b3;
+    --yellow: #e6c801;
+
+    --font: "Poppins", Helvetica, Arial, sans-serif;
+
+    --foreground: var(--foreground-01);
+    --background: var(--background-01);
+
+    --foreground-accent: var(--foreground-07);
+    --background-accent: var(--background-07);
+
+    --border-simple: var(--spacing-xxs) solid var(--foreground-03);
+    --border-accent: var(--spacing-xs) solid var(--accent);
+
+    --font-size-xxs: 4pt;
+    --font-size-xs: 7pt;
+    --font-size-s: 9pt;
+    --font-size-m: 11pt;
+    --font-size-l: 14pt;
+    --font-size-xl: 19pt;
+    --font-size-xxl: 24pt;
+
+    --font-heading-l: bold 2em var(--font);
+    --font-heading-m: bold 1.75em var(--font);
+    --font-heading-s: bold 1.5em var(--font);
+
+    --font-article: var(--font-size-m) var(--font);
+
+    --font-xxs: 4pt var(--font);
+    --font-xxs-bold: bold 4pt var(--font);
+    --font-xs: 7pt var(--font);
+    --font-xs-bold: bold 7pt var(--font);
+    --font-s: 9pt var(--font);
+    --font-s-bold: bold 9pt var(--font);
+    --font-m: 11pt var(--font);
+    --font-m-bold: bold 11pt var(--font);
+    --font-l: 14pt var(--font);
+    --font-l-bold: bold 14pt var(--font);
+    --font-xl: 19pt var(--font);
+    --font-xl-bold: bold 19pt var(--font);
+    --font-xxl: 24pt var(--font);
+    --font-xxl-bold: bold 24pt var(--font);
+}
+
+/* Light theme */
+@media screen and (prefers-color-scheme: light) {
+    :root {
+        --background-01: var(--shade-07);
+        --foreground-01: var(--shade-01);
+
+        --background-02: var(--shade-06);
+        --foreground-02: var(--shade-02);
+
+        --background-03: var(--shade-05);
+        --foreground-03: var(--shade-03);
+
+        --background-04: var(--shade-04);
+        --foreground-04: var(--shade-04);
+
+        --background-05: var(--shade-03);
+        --foreground-05: var(--shade-05);
+
+        --background-06: var(--shade-02);
+        --foreground-06: var(--shade-06);
+
+        --background-07: var(--shade-01);
+        --foreground-07: var(--shade-07);
+
+        --delta: 0.8;
+    }
+}
+
+/* Dark theme */
+@media screen and (prefers-color-scheme: dark) {
+    :root {
+        --background-01: var(--shade-01);
+        --foreground-01: var(--shade-07);
+
+        --background-02: var(--shade-02);
+        --foreground-02: var(--shade-06);
+
+        --background-03: var(--shade-03);
+        --foreground-03: var(--shade-05);
+
+        --background-04: var(--shade-04);
+        --foreground-04: var(--shade-04);
+
+        --background-05: var(--shade-05);
+        --foreground-05: var(--shade-03);
+
+        --background-06: var(--shade-06);
+        --foreground-06: var(--shade-02);
+
+        --background-07: var(--shade-07);
+        --foreground-07: var(--shade-01);
+
+        --delta: 1.2;
+    }
+}

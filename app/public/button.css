@@ -1,0 +1,58 @@
+button {
+    padding: var(--spacing-s) var(--spacing-m);
+    border: none;
+
+    font: var(--font-s-bold);
+}
+
+button:not([disabled]) {
+    cursor: pointer;
+}
+
+button:not([disabled]):hover, button:not([disabled]).secondary:hover {
+    background: var(--accent);
+    color: var(--foreground-accent);
+}
+
+button:not([disabled]).primary:hover {
+    background: hsl(var(--accent-h), var(--accent-s), calc(var(--accent-l) * var(--delta)))
+}
+
+button:not([disabled]).primary {
+    background: var(--accent);
+    color: var(--foreground-accent);
+}
+
+button:not([disabled]), button:not([disabled]).secondary {
+    background: var(--background-02);
+    color: var(--accent);
+}
+
+button:not([disabled]).confirm {
+    background: var(--green);
+    color: var(--foreground-accent);
+}
+
+button:not([disabled]).warn {
+    background: var(--yellow);
+    color: var(--foreground-accent);
+}
+
+button:not([disabled]).danger {
+    background: var(--red);
+    color: var(--foreground-accent);
+}
+
+button[disabled] {
+    background: var(--background-02);
+    color: var(--foreground-05);
+
+    cursor: not-allowed;
+}
+
+.button-group {
+    display: flex;
+    flex-direction: row;
+
+    align-items: baseline;
+}

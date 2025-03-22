@@ -1,0 +1,24 @@
+{
+	"name": "app",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"type": "module",
+	"scripts": {
+		"build": "node ./build.js"
+	},
+	"dependencies": {
+		"react": "latest",
+		"react-dom": "latest",
+		"react-router": "latest"
+	},
+	"devDependencies": {
+		"esbuild": "latest",
+		"typescript": "latest",
+
+		"@types/react": "latest",
+		"@types/react-dom": "latest",
+		"@types/react-router": "latest"
+	},
+	"private": true
+}

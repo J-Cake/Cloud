@@ -1,0 +1,7 @@
+{
+	"apiLocation": "http://localhost:9999",
+	"loginUrl": "http://localhost:9999/login",
+	"userUrl": "http://localhost:9999/api/user",
+	"oauthService": "https://github.com/login/oauth/authorize?scope=user:email&client_id=$clientId",
+	"clientId": "Ov23li5vgBBNF2hjXy7x"
+}

@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="Static" pattern="file[jcake-cloud]:app/public//*||file[jcake-cloud]:app/build//*" />
+</component>

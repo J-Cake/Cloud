@@ -1,0 +1,108 @@
+.flexbox-horizontal {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+}
+
+.flexbox-vertical {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.gap-xxs { gap: var(--spacing-xxs); }
+.gap-xs { gap: var(--spacing-xs); }
+.gap-s { gap: var(--spacing-s); }
+.gap-m { gap: var(--spacing-m); }
+.gap-l { gap: var(--spacing-l); }
+.gap-xl { gap: var(--spacing-xl); }
+.gap-xxl { gap: var(--spacing-xxl); }
+
+.padding-xxs { padding: var(--spacing-xxs); }
+.padding-xs { padding: var(--spacing-xs); }
+.padding-s { padding: var(--spacing-s); }
+.padding-m { padding: var(--spacing-m); }
+.padding-l { padding: var(--spacing-l); }
+.padding-xl { padding: var(--spacing-xl); }
+.padding-xxl { padding: var(--spacing-xxl); }
+
+.padding-h-xxs {
+    padding-left: var(--spacing-xxs);
+    padding-right: var(--spacing-xxs);
+}
+.padding-h-xs {
+    padding-left: var(--spacing-xs);
+    padding-right: var(--spacing-xs);
+}
+.padding-h-s {
+    padding-left: var(--spacing-s);
+    padding-right: var(--spacing-s);
+}
+.padding-h-m {
+    padding-left: var(--spacing-m);
+    padding-right: var(--spacing-m);
+}
+.padding-h-l {
+    padding-left: var(--spacing-l);
+    padding-right: var(--spacing-l);
+}
+.padding-h-xl {
+    padding-left: var(--spacing-xl);
+    padding-right: var(--spacing-xl);
+}
+.padding-h-xxl {
+    padding-left: var(--spacing-xxl);
+    padding-right: var(--spacing-xxl);
+}
+
+.padding-v-xxs {
+    padding-top: var(--spacing-xxs);
+    padding-bottom: var(--spacing-xxs);
+}
+.padding-v-xs {
+    padding-top: var(--spacing-xs);
+    padding-bottom: var(--spacing-xs);
+}
+.padding-v-s {
+    padding-top: var(--spacing-s);
+    padding-bottom: var(--spacing-s);
+}
+.padding-v-m {
+    padding-top: var(--spacing-m);
+    padding-bottom: var(--spacing-m);
+}
+.padding-v-l {
+    padding-top: var(--spacing-l);
+    padding-bottom: var(--spacing-l);
+}
+.padding-v-xl {
+    padding-top: var(--spacing-xl);
+    padding-bottom: var(--spacing-xl);
+}
+.padding-v-xxl {
+    padding-top: var(--spacing-xxl);
+    padding-bottom: var(--spacing-xxl);
+}
+
+.font-xxs { font: var(--font-xxs); }
+.font-xs { font: var(--font-xs); }
+.font-s { font: var(--font-s); }
+.font-m { font: var(--font-m); }
+.font-l { font: var(--font-l); }
+.font-xl { font: var(--font-xl); }
+.font-xxl { font: var(--font-xxl); }
+
+.align-start { justify-content: flex-start; }
+.align-centre { justify-content: center; }
+.align-stretch { justify-content: stretch; }
+.align-end { justify-content: flex-end; }
+
+.minor-align-start { align-items: flex-start; }
+.minor-align-centre { align-items: center; }
+.minor-align-stretch { align-items: stretch; }
+.minor-align-end { align-items: flex-end; }
+
+.icon {
+    font-family: "remixicon";
+    font-size: 1.3em;
+}

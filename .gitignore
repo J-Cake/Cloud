@@ -1,0 +1,7 @@
+**/target
+**/build
+**/node_modules
+**/*lock*
+**/db
+/oauth.json
+/app/config.json

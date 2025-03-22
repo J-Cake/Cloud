@@ -1,0 +1,57 @@
+input:not([type="checkbox"]) {
+    padding: var(--spacing-xs) var(--spacing-s);
+    border: none;
+    border-bottom: var(--border-simple);
+    outline: none;
+
+    background: transparent;
+    color: var(--foreground);
+
+    width: var(--element-xxs);
+}
+
+input:not([type="checkbox"]):focus {
+    border-bottom: var(--border-accent);
+}
+
+input[type="checkbox"] {
+    appearance: none;
+    margin: 0;
+    padding: 0;
+}
+
+input[type="checkbox"]:before {
+    display: inline-flex;
+    position: relative;
+
+    align-items: center;
+    justify-content: center;
+
+    content: '';
+    font-family: "remixicon";
+    font-size: var(--font-size-m);
+    font-weight: bold;
+
+    --checkbox-size: var(--spacing-m);
+
+    width: var(--checkbox-size);
+    height: var(--checkbox-size);
+
+    line-height: var(--checkbox-size);
+
+    border: var(--spacing-xxs) solid var(--accent);
+
+    overflow: hidden;
+    text-align: center;
+}
+
+input[type="checkbox"]:checked:before {
+    content: "\EB7B";
+    background: var(--accent);
+    color: var(--foreground-accent);
+    font-weight: bold;
+}
+
+input[type="checkbox"]:not(:checked):before {
+
+}
