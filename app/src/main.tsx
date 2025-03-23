@@ -2,25 +2,31 @@ import React from 'react';
 import * as dom from 'react-dom/client';
 import * as reactRouter from 'react-router';
 
-import Welcome from "./welcome.js";
+import Login from "./login.js";
+import Overview from "./applets/overview.js";
+import Files from "./applets/files.js";
+import Loading from "./components/loading.js";
+
 import * as api from "./api.js";
+
+import $, {Language, loadLanguage} from "./localisation.js";
 
 import '@/main.css';
 
-export const router = reactRouter.createBrowserRouter([
-	{
-		path: "/",
-		element: <App />,
-		async loader(router) {
-			const token: string = await Promise.resolve(window.localStorage.getItem("token"))
-				.then(token => !token ? Promise.reject() : token)
-				.then(str => JSON.parse(str))
-				.catch(_ => null);
+export const selectedLanguage = React.createContext<Language>('de_DE');
+export const user = React.createContext<api.LoginResult | null>(null);
 
-			if (token)
-				return await fetch(api.config.userUrl, { headers: { Authorization: `Bearer ${token}` } });
-		}
-	},
+export function applet(path: string, child: React.ReactNode, loader?: reactRouter.RouteObject['loader']): reactRouter.RouteObject {
+	return {
+		path,
+		element: <App>{child}</App>,
+		loader
+	}
+}
+
+export const router = reactRouter.createBrowserRouter([
+	applet("/", <Overview />),
+	applet("/files", <Files />),
 	{
 		path: "/oauth-callback",
 		element: <App />,
@@ -39,25 +45,34 @@ export const router = reactRouter.createBrowserRouter([
 				return null;
 
 			window.localStorage.setItem("token", JSON.stringify(user.token));
+			window.history.replaceState(null, "", "/app");
 
 			return user;
 		}
 	}
-
 ], {
 	basename: "/app"
 });
 
 export default async function main(root: HTMLElement) {
+	await loadLanguage("en_AU", "de_DE");
+
 	dom.createRoot(root)
 		.render(<reactRouter.RouterProvider router={router} />);
 }
 
-export function App() {
-	const data = reactRouter.useLoaderData<api.LoginResult>();
+export function App(props: React.PropsWithChildren<{}>) {
+	const [state, setState] = React.useState<api.LoginResult | null | { success: false }>(null)
 
-	if (data)
-		return <h1>{`You are logged in as ${data.user.displayName}`}</h1>;
+	if (!state)
+		api.loadUser().then(setState);
+
+	if (state && state.success)
+		return <user.Provider value={state}>
+			{props.children}
+		</user.Provider>;
+	else if (!state)
+		return <Loading />;
 	else
-		return <Welcome/>;
+		return <Login/>;
 }

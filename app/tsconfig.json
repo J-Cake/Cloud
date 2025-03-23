@@ -18,7 +18,7 @@
 		"strict": true,
 
 		"paths": {
-			"@/*": ["./public/*"]
+			"@/*": ["./public/*"],
 		}
 	},
 	"include": ["./build.js", "./def.d.ts"],

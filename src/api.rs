@@ -1,65 +1,74 @@
 use crate::{
-	Args,
-	HTTPClient
+    Args,
+    HTTPClient
 };
 use actix_session::{
-	SessionMiddleware
+    config::SessionMiddlewareBuilder,
+    SessionMiddleware
 };
 use actix_web::{
-    Responder,
-    HttpResponseBuilder,
-    HttpResponse,
-    Error,
-    Result,
+    body::BoxBody,
     body::MessageBody,
     cookie::Cookie,
+    dev::Extensions,
+    dev::Service,
+    dev::ServiceFactory,
     dev::ServiceRequest,
     dev::ServiceResponse,
+    dev::Transform,
     error::JsonPayloadError,
     error::PayloadError,
     get,
+    middleware::from_fn,
     middleware::Next,
     post,
     web,
-    Route,
-    Scope,
+    web::Data,
+    web::Query,
+    Error,
     HttpMessage,
     HttpRequest,
-    body::BoxBody,
-    dev::{Service, ServiceFactory, Transform},
-    middleware::from_fn,
-    web::Data
+    HttpResponse,
+    HttpResponseBuilder,
+    Responder,
+    Result,
+    Route,
+    Scope,
+    web::Payload
 };
 use base64::{
-	Engine,
-	prelude::BASE64_STANDARD
+    prelude::BASE64_STANDARD,
+    Engine
 };
 use log::error;
 use rand::RngCore;
 use reqwest::{
-	Client,
-	Url
+    Client,
+    Url
 };
 use serde::{
-	Deserialize,
-	Serialize
+    Deserialize,
+    Serialize
 };
 use serde_json::{
     json,
     Value
 };
 use sqlx::{
+    postgres::PgRow,
     FromRow,
     PgPool,
-    Row,
-    postgres::PgRow
+    Row
 };
 use std::{
-	cell::Cell,
-	cell::LazyCell,
-	cell::RefCell
+    cell::Cell,
+    cell::LazyCell,
+    cell::RefCell,
+    process::Stdio
 };
-use actix_session::config::SessionMiddlewareBuilder;
+use std::path::PathBuf;
+use tokio::io::AsyncWriteExt;
+use futures_util::StreamExt as _;
 
 thread_local! {
     pub static RNG: RefCell<rand::rngs::ThreadRng> = RefCell::new(rand::rng());
@@ -105,7 +114,7 @@ struct OAuthResponse {
     token_type: String,
 }
 
-#[derive(Debug, Serialize, Deserialize, sqlx::FromRow)]
+#[derive(Debug, Clone, Serialize, Deserialize, sqlx::FromRow)]
 #[serde(rename_all = "camelCase")]
 pub struct User {
     email: String,
@@ -200,11 +209,11 @@ pub async fn authenticate(req: ServiceRequest, next: Next<impl MessageBody + 'st
 
     let token = match token.to_str() {
         Ok(token) if token.to_lowercase().starts_with("bearer ") => token[7..].to_owned(),
-        _ => return Ok(req.into_response(HttpResponse::BadRequest()
-            .json(json! {{
+        _ =>
+            return Ok(req.into_response(HttpResponse::BadRequest().json(json! {{
                 "success": false,
                 "msg": "Invalid token"
-            }})))
+            }}))),
     };
 
     let Some(pool) = req.app_data::<Data<PgPool>>() else {
@@ -217,7 +226,8 @@ pub async fn authenticate(req: ServiceRequest, next: Next<impl MessageBody + 'st
     let user: User = match sqlx::query(r#"SELECT * FROM oauth_keys LEFT OUTER JOIN users ON users.uid = oauth_keys."user" WHERE token = $1"#)
         .bind(token)
         .fetch_one(pool.get_ref())
-        .await {
+        .await
+    {
         Ok(user) => match User::from_row(&user) {
             Ok(user) => user,
             Err(err) => {
@@ -225,7 +235,7 @@ pub async fn authenticate(req: ServiceRequest, next: Next<impl MessageBody + 'st
                 return Ok(req.into_response(HttpResponse::InternalServerError().json(json! {{
                     "success": false,
                     "msg": "Corrupt database user."
-                }})))
+                }})));
             }
         },
         Err(err) => {
@@ -243,17 +253,123 @@ pub async fn authenticate(req: ServiceRequest, next: Next<impl MessageBody + 'st
 }
 
 #[get("/user")]
-pub async fn get_user(req: HttpRequest) ->  Result<impl Responder> {
+pub async fn get_user(req: HttpRequest) -> Result<impl Responder> {
     let ext = req.extensions();
     let Some(user) = ext.get::<User>() else {
         return Ok(HttpResponse::NotFound().json(json! {{
             "success": true,
             "msg": "User not found."
-        }}))
+        }}));
     };
 
     Ok(HttpResponse::Ok().json(json! {{
         "success": true,
         "user": user
     }}))
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SystemQueryParameterMap {
+    command: Option<String>,
+    args: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, sqlx::FromRow)]
+pub struct StorageProps {
+    display: String,
+    email: String,
+
+    #[sqlx(rename = "unix_uid")]
+    uid: i32,
+
+    #[sqlx(rename = "data")]
+    base: String,
+
+    #[sqlx(rename = "uid")]
+    pk: i32
+}
+
+#[post("/system")]
+pub async fn system(mut req: HttpRequest, pool: Data<PgPool>, query: Query<SystemQueryParameterMap>, mut body: Payload) -> Result<impl Responder> {
+    let Some(user) = req.extensions().get::<User>().cloned() else {
+        return Ok(HttpResponse::Unauthorized().json(json! {{
+            "success": false,
+            "msg": "Not signed in"
+        }}));
+    };
+
+    let user: StorageProps = match sqlx::query(r#"SELECT * FROM users LEFT JOIN storage ON users.uid = storage.uid WHERE email = $1"#)
+        .bind(&user.email)
+        .fetch_one(pool.get_ref())
+        .await
+    {
+        Ok(row) => match FromRow::from_row(&row) {
+            Ok(props) => props,
+            Err(err) => {
+                error!("{:?}", err);
+                return Ok(HttpResponse::InternalServerError().json(json! {{
+                    "success": false,
+                    "msg": "Internal server error.",
+                    "err": err.to_string()
+            }}));
+            }
+        },
+        Err(err) => {
+            error!("{:?}", err);
+            return Ok(HttpResponse::InternalServerError().json(json! {{
+                "success": false,
+                "msg": "Internal server error.",
+                "err": err.to_string()
+            }}));
+        }
+    };
+
+    let Some(ref cmd) = query.command else {
+        return Ok(HttpResponse::BadRequest().json(json! {{
+            "success": false,
+            "msg": "missing required parameter `command`"
+        }}));
+    };
+
+    let args = query
+        .args
+        .as_ref()
+        .map(|i| i.split(';').collect::<Vec<&str>>())
+        .unwrap_or(vec![]);
+
+    log::debug!("{:?}", &args);
+
+    let mut agent = match tokio::process::Command::new("agent")
+        .args(&["--base", &user.base, &user.uid.to_string(), cmd])
+        .args(&args)
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .spawn()
+    {
+        Ok(agent) => agent,
+        Err(err) => {
+            log::error!("{:?}", err);
+            return Ok(HttpResponse::InternalServerError().json(json! {{
+                "success": false,
+                "msg": "Failed to spawn agent.",
+                "err": err.to_string(),
+                "args": &query.0
+            }}));
+        }
+    };
+
+    if let Some(mut stdin) = agent.stdin {
+        // Here we can fully write the incoming side before receiving the outgoing because the agent has no commands (yet) that require both streams at once.
+        // However, in future I plan on implementing encrypted files in terms of the agent. For this I would need to use both streams
+
+        while let Some(Ok(chunk)) = body.next().await {
+            stdin.write(chunk.as_ref()).await?;
+        }
+    }
+
+    if let Some(stdout) = agent.stdout {
+        Ok(HttpResponse::Ok().streaming(tokio_util::io::ReaderStream::new(stdout)))
+    } else {
+        Ok(HttpResponse::Ok().into())
+    }
 }

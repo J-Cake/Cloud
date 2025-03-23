@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Docker Image" type="docker-deploy" factoryName="docker-image" activateToolWindowBeforeRun="false" server-name="Docker">
+  <configuration default="false" name="Postgres" type="docker-deploy" factoryName="docker-image" activateToolWindowBeforeRun="false" server-name="Docker">
     <deployment type="docker-image">
       <settings>
         <option name="imageTag" value="postgres" />

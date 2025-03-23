@@ -1,3 +1,4 @@
+import * as fs from 'node:fs/promises';
 import esbuild from 'esbuild';
 
 const result = await esbuild.build({
@@ -7,8 +8,9 @@ const result = await esbuild.build({
 	platform: "browser",
 	format: "esm",
 	outdir: "build",
-	minify: true,
+	splitting: true,
 	treeShaking: true,
+	minify: true,
 
 	plugins: [{
 		name: "sql",
@@ -34,3 +36,6 @@ const result = await esbuild.build({
 });
 
 console.log(result);
+
+for await (const file of await fs.readdir("public/translations"))
+	await fs.copyFile(`public/translations/${file}`, `build/${file}`);

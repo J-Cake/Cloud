@@ -1,7 +1,8 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Agent" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
-    <option name="command" value="run --package agent --bin agent -- 1000 file::read $USER_HOME$/.ssh/config" />
-    <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+  <configuration default="false" name="Agent" type="CargoCommandRunConfiguration" factoryName="Cargo Command" activateToolWindowBeforeRun="false">
+    <option name="buildProfileId" value="dev" />
+    <option name="command" value="run --package agent --bin agent -- --base $USER_HOME$/Desktop/Notes 1000 file::lsdir ../" />
+    <option name="workingDirectory" value="file://$USER_HOME$/Desktop/Notes" />
     <envs />
     <option name="emulateTerminal" value="true" />
     <option name="channel" value="DEFAULT" />

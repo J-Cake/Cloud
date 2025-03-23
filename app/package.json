@@ -10,12 +10,14 @@
 	"dependencies": {
 		"react": "latest",
 		"react-dom": "latest",
-		"react-router": "latest"
+		"react-router": "latest",
+		"json5": "latest"
 	},
 	"devDependencies": {
 		"esbuild": "latest",
 		"typescript": "latest",
 
+		"@types/node": "latest",
 		"@types/react": "latest",
 		"@types/react-dom": "latest",
 		"@types/react-router": "latest"

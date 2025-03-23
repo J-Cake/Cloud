@@ -4,7 +4,8 @@
     <option name="command" value="run --package jcake-cloud --bin jcake-cloud -- --listen 0.0.0.0:9999 --database postgres://cloud:hello_world@localhost:5432 --sql app/src --static ./app/build --index ./app/public/index.html" />
     <option name="workingDirectory" value="file://$PROJECT_DIR$" />
     <envs>
-      <env name="RUST_LOG" value="debug" />
+      <env name="RUST_LOG" value="jcake-cloud=debug" />
+      <env name="PATH" value="$USER_HOME$/.cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/var/lib/flatpak/exports/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/opt/rocm/bin:$USER_HOME$/.local/share/JetBrains/Toolbox/scripts:$PROJECT_DIR$/target/debug/" />
     </envs>
     <option name="emulateTerminal" value="true" />
     <option name="channel" value="DEFAULT" />
